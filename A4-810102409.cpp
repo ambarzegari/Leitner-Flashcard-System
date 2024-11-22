@@ -74,14 +74,6 @@ public:
             daily.addFlashcardToBox(fc);
         }
     }
-
-    void print()
-    {
-        for (int i = 0; i <flashcard.size(); i++)
-        {
-            cout << flashcard[i]->getQuestion() << " : " << flashcard[i]->getAnswer() << endl;
-        }
-    }
 };
 
 int main()
@@ -94,7 +86,6 @@ int main()
         if (command == "add_flashcard")
         {
             leitner_boxes.addFlashcard();
-            leitner_boxes.print();
         }
     }
 }
