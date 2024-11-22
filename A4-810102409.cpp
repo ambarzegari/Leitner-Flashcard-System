@@ -113,6 +113,8 @@ public:
                 cout << "Your answer was correct! Well done, keep it up!" << endl;
                 weekly.addFlashcardToBox(fc);
                 daily.deleteFlashcardFromBox(fc);
+                i -= 1;
+                number_of_flashcards -= 1;
             }
             else
             {
