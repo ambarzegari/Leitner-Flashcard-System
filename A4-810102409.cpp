@@ -7,6 +7,7 @@ using namespace std;
 
 const string ADD_FLASHCARD = "add_flashcard";
 const string REVIEW_TODAY = "review_today";
+const string NEXT_DAY = "next_day";
 const string STREAK = "streak";
 
 class Flashcard
@@ -50,7 +51,8 @@ public:
     {
         flashcard.push_back(flashcard_ptr);
     }
-    Flashcard* getFlashcard(int i){
+    Flashcard *getFlashcard(int i)
+    {
         return flashcard[i];
     }
     void deleteFlashcardFromBox(Flashcard *flashcard_ptr)
@@ -59,10 +61,34 @@ public:
     }
 };
 
+class Day
+{
+private:
+    int dayNumber;
+    int correctAnswer;
+    int incorrectAnswer;
+
+public:
+    Day(int day)
+    {
+        dayNumber = day;
+        correctAnswer = 0;
+        incorrectAnswer = 0;
+    }
+    int getDayNumber() { return dayNumber; }
+    int getCorrectAnswerNumber() { return correctAnswer; }
+    int getIncorrectAnswerNumber() { return incorrectAnswer; }
+};
+
 class Leitner
 {
 private:
     vector<Flashcard *> flashcard;
+
+    vector<Day> days;
+
+    int streak;
+
     Box daily;
     Box once_in_three_days;
     Box weekly;
@@ -72,6 +98,8 @@ public:
     Leitner()
     {
         flashcard = {};
+        days = {Day(1)};
+        streak = 0;
     };
     void addFlashcard()
     {
@@ -92,8 +120,9 @@ public:
             daily.addFlashcardToBox(fc);
         }
     }
-    void reviewToday(){
-        Flashcard* fc;
+    void reviewToday()
+    {
+        Flashcard *fc;
 
         string user_answer;
 
@@ -109,7 +138,7 @@ public:
             cin >> user_answer;
 
             if (fc->getAnswer() == user_answer)
-            {
+            {   
                 cout << "Your answer was correct! Well done, keep it up!" << endl;
                 weekly.addFlashcardToBox(fc);
                 daily.deleteFlashcardFromBox(fc);
@@ -120,11 +149,27 @@ public:
             {
                 cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
             }
-            
-            
         }
-        
-        
+
+        cout << "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!" << endl;
+    }
+    void nextDay(){
+
+        Day oldDay = days[days.size()-1];
+        Day newDay = Day(days.size()+1);
+        days.push_back(newDay);
+
+        if (oldDay.getCorrectAnswerNumber() == 0 && oldDay.getIncorrectAnswerNumber() == 0)
+        {
+            streak = 0;
+        }
+        else
+        {
+            streak += 1;
+        }
+        cout << "Good morning! Today is day " << newDay.getDayNumber() << " of our journey." << endl;
+        cout << "Your current streak is: " << streak << endl;
+        cout << "Start reviewing to keep your streak!" << endl;
     }
 };
 
@@ -143,7 +188,9 @@ int main()
         {
             leitner_boxes.reviewToday();
         }
-        
-        
+        else if (command == NEXT_DAY)
+        {
+            leitner_boxes.nextDay();
+        }
     }
 }
