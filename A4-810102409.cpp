@@ -35,6 +35,14 @@ public:
     {
         number_of_incorrect_answer = 0;
     }
+    bool checkAnswer(string userAnswer)
+    {
+        if (answer == userAnswer)
+        {
+            return true;
+        }
+        return false;
+    }
 };
 
 class Box
@@ -58,6 +66,10 @@ public:
     void deleteFlashcardFromBox(Flashcard *flashcard_ptr)
     {
         flashcard.erase(find(flashcard.begin(), flashcard.end(), flashcard_ptr));
+    }
+    int numberOfFlashcardInBox()
+    {
+        return flashcard.size();
     }
 };
 
@@ -124,39 +136,47 @@ public:
     {
         Flashcard *fc;
 
+        Day today = days[days.size() - 1];
+
         string user_answer;
 
         int number_of_flashcards;
         cin >> number_of_flashcards;
 
-        for (int i = 0; i < number_of_flashcards; i++)
+        if (today.getDayNumber() % 30 == 0)
         {
-            fc = daily.getFlashcard(i);
-
-            cout << "Flashcard: " << fc->getQuestion() << endl;
-            cout << "Your answer: ";
-            cin >> user_answer;
-
-            if (fc->getAnswer() == user_answer)
-            {   
-                cout << "Your answer was correct! Well done, keep it up!" << endl;
-                weekly.addFlashcardToBox(fc);
-                daily.deleteFlashcardFromBox(fc);
-                i -= 1;
-                number_of_flashcards -= 1;
-            }
-            else
+            for (number_of_flashcards; number_of_flashcards < monthly.numberOfFlashcardInBox(); number_of_flashcards--)
             {
-                cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
+                /* code */
             }
+        }
+
+        fc = daily.getFlashcard(i);
+
+        cout << "Flashcard: " << fc->getQuestion() << endl;
+        cout << "Your answer: ";
+        cin >> user_answer;
+
+        if (fc->getAnswer() == user_answer)
+        {
+            cout << "Your answer was correct! Well done, keep it up!" << endl;
+            weekly.addFlashcardToBox(fc);
+            daily.deleteFlashcardFromBox(fc);
+            i -= 1;
+            number_of_flashcards -= 1;
+        }
+        else
+        {
+            cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
         }
 
         cout << "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!" << endl;
     }
-    void nextDay(){
+    void nextDay()
+    {
 
-        Day oldDay = days[days.size()-1];
-        Day newDay = Day(days.size()+1);
+        Day oldDay = days[days.size() - 1];
+        Day newDay = Day(days.size() + 1);
         days.push_back(newDay);
 
         if (oldDay.getCorrectAnswerNumber() == 0 && oldDay.getIncorrectAnswerNumber() == 0)
