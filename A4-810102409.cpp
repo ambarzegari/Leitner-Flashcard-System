@@ -71,6 +71,32 @@ public:
     {
         return flashcard.size();
     }
+    /*void reviewFlashcardFromBox(int numOfFc)
+    {
+        Flashcard *fc;
+        string user_answer;
+
+        for (int i = 0; i < numOfFc && i < flashcard.size(); i++)
+        {
+            fc = flashcard[i];
+            cout << "Flashcard: " << fc->getQuestion() << endl;
+            cout << "Your answer: ";
+            cin >> user_answer;
+
+            if (fc->getAnswer() == user_answer)
+            {
+                cout << "Your answer was correct! Well done, keep it up!" << endl;
+                weekly.addFlashcardToBox(fc);
+                daily.deleteFlashcardFromBox(fc);
+                i -= 1;
+                numOfFc -= 1;
+            }
+            else
+            {
+                cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
+            }
+        }
+    }*/
 };
 
 class Day
@@ -90,6 +116,14 @@ public:
     int getDayNumber() { return dayNumber; }
     int getCorrectAnswerNumber() { return correctAnswer; }
     int getIncorrectAnswerNumber() { return incorrectAnswer; }
+    void increseCorrectAnswer()
+    {
+        correctAnswer += 1;
+    }
+    void increseIncorrectAnswer()
+    {
+        incorrectAnswer += 1;
+    }
 };
 
 class Leitner
@@ -142,32 +176,140 @@ public:
 
         int number_of_flashcards;
         cin >> number_of_flashcards;
+        int num_fc = number_of_flashcards;
 
-        if (today.getDayNumber() % 30 == 0)
+        if (today.getDayNumber() % 30 == 0 && num_fc > 0)
         {
-            for (number_of_flashcards; number_of_flashcards < monthly.numberOfFlashcardInBox(); number_of_flashcards--)
+            for (int i = 0; i < num_fc && i < monthly.numberOfFlashcardInBox(); i++)
             {
-                /* code */
+                fc = monthly.getFlashcard(i);
+
+                cout << "Flashcard: " << fc->getQuestion() << endl;
+                cout << "Your answer: ";
+                cin >> user_answer;
+
+                if (fc->getAnswer() == user_answer)
+                {
+                    cout << "Your answer was correct! Well done, keep it up!" << endl;
+                    monthly.deleteFlashcardFromBox(fc);
+                    days[days.size() - 1].increseCorrectAnswer();
+                    i -= 1;
+                    num_fc -= 1;
+                }
+                else
+                {
+                    cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
+                    days[days.size() - 1].increseIncorrectAnswer();
+                    fc->increaseNumberOfIncorrectAnswer();
+                    if (fc->getNumberOfIncorrectAnswer() == 2)
+                    {
+                        weekly.addFlashcardToBox(fc);
+                        monthly.deleteFlashcardFromBox(fc);
+                        fc->resetToZeroNumberOfIncorrectAnswer();
+                    }
+                }
             }
+            num_fc -= monthly.numberOfFlashcardInBox();
         }
 
-        fc = daily.getFlashcard(i);
-
-        cout << "Flashcard: " << fc->getQuestion() << endl;
-        cout << "Your answer: ";
-        cin >> user_answer;
-
-        if (fc->getAnswer() == user_answer)
+        if (today.getDayNumber() % 7 == 0 && num_fc > 0)
         {
-            cout << "Your answer was correct! Well done, keep it up!" << endl;
-            weekly.addFlashcardToBox(fc);
-            daily.deleteFlashcardFromBox(fc);
-            i -= 1;
-            number_of_flashcards -= 1;
+            for (int i = 0; i < num_fc && i < weekly.numberOfFlashcardInBox(); i++)
+            {
+                fc = weekly.getFlashcard(i);
+
+                cout << "Flashcard: " << fc->getQuestion() << endl;
+                cout << "Your answer: ";
+                cin >> user_answer;
+
+                if (fc->getAnswer() == user_answer)
+                {
+                    cout << "Your answer was correct! Well done, keep it up!" << endl;
+                    monthly.addFlashcardToBox(fc);
+                    weekly.deleteFlashcardFromBox(fc);
+                    fc->resetToZeroNumberOfIncorrectAnswer();
+                    days[days.size() - 1].increseCorrectAnswer();
+                    i -= 1;
+                    num_fc -= 1;
+                }
+                else
+                {
+                    cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
+                    days[days.size() - 1].increseIncorrectAnswer();
+                    fc->increaseNumberOfIncorrectAnswer();
+                    if (fc->getNumberOfIncorrectAnswer() == 2)
+                    {
+                        once_in_three_days.addFlashcardToBox(fc);
+                        weekly.deleteFlashcardFromBox(fc);
+                        fc->resetToZeroNumberOfIncorrectAnswer();
+                    }
+                }
+            }
+            num_fc -= weekly.numberOfFlashcardInBox();
         }
-        else
+
+        if (today.getDayNumber() % 3 == 0 && num_fc > 0)
         {
-            cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
+            for (int i = 0; i < num_fc && i < once_in_three_days.numberOfFlashcardInBox(); i++)
+            {
+                fc = once_in_three_days.getFlashcard(i);
+
+                cout << "Flashcard: " << fc->getQuestion() << endl;
+                cout << "Your answer: ";
+                cin >> user_answer;
+
+                if (fc->getAnswer() == user_answer)
+                {
+                    cout << "Your answer was correct! Well done, keep it up!" << endl;
+                    weekly.addFlashcardToBox(fc);
+                    once_in_three_days.deleteFlashcardFromBox(fc);
+                    fc->resetToZeroNumberOfIncorrectAnswer();
+                    days[days.size() - 1].increseCorrectAnswer();
+                    i -= 1;
+                    num_fc -= 1;
+                }
+                else
+                {
+                    cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
+                    days[days.size() - 1].increseIncorrectAnswer();
+                    fc->increaseNumberOfIncorrectAnswer();
+                    if (fc->getNumberOfIncorrectAnswer() == 2)
+                    {
+                        daily.addFlashcardToBox(fc);
+                        once_in_three_days.deleteFlashcardFromBox(fc);
+                        fc->resetToZeroNumberOfIncorrectAnswer();
+                    }
+                }
+            }
+            num_fc -= once_in_three_days.numberOfFlashcardInBox();
+        }
+
+        if (today.getDayNumber() % 1 == 0 && num_fc > 0)
+        {
+            for (int i = 0; i < num_fc && i < daily.numberOfFlashcardInBox(); i++)
+            {
+                fc = daily.getFlashcard(i);
+
+                cout << "Flashcard: " << fc->getQuestion() << endl;
+                cout << "Your answer: ";
+                cin >> user_answer;
+
+                if (fc->getAnswer() == user_answer)
+                {
+                    cout << "Your answer was correct! Well done, keep it up!" << endl;
+                    once_in_three_days.addFlashcardToBox(fc);
+                    daily.deleteFlashcardFromBox(fc);
+                    fc->resetToZeroNumberOfIncorrectAnswer();
+                    days[days.size() - 1].increseCorrectAnswer();
+                    i -= 1;
+                    num_fc -= 1;
+                }
+                else
+                {
+                    cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
+                    days[days.size() - 1].increseIncorrectAnswer();
+                }
+            }
         }
 
         cout << "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!" << endl;
