@@ -9,6 +9,7 @@ const string ADD_FLASHCARD = "add_flashcard";
 const string REVIEW_TODAY = "review_today";
 const string NEXT_DAY = "next_day";
 const string STREAK = "streak";
+const string GET_REPORT = "get_report";
 
 const string COMPLETE_REVIEW_MASSAGE = "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!";
 const string FLASHCARD_ADDED_MASSAGE = "flashcards added to the daily box";
@@ -326,6 +327,41 @@ public:
         cout << "Your current streak is: " << streak << endl;
         cout << "Start reviewing to keep your streak!" << endl;
     }
+    void printStreak()
+    {
+        cout << "Your current streak is: " << streak << endl;
+        cout << "Keep going!" << endl;
+    }
+    void getReport(){
+        int start;
+        int end;
+
+        int correct = 0;
+        int incorrect = 0;
+
+        cin >> start;
+        cin >> end;
+
+        if (start == end){
+            for (int i = 0; i <= end - start ; i++)
+            {
+                correct += days[start - 1 + i].getCorrectAnswerNumber();
+                incorrect += days[start - 1 + i].getIncorrectAnswerNumber();
+            }
+            cout << "Day: " << start << " to " << end << endl;
+            cout << "Correct Answer: " << correct << endl;
+            cout << "Incorrect Answer: " << incorrect << endl;
+            cout << "Total: " << incorrect + correct << endl;
+        }
+        else
+        {
+            cout << "Day: " << start << endl;
+            cout << "Correct Answer: " << days[start - 1].getCorrectAnswerNumber() << endl;
+            cout << "Incorrect Answer: " << days[start - 1].getIncorrectAnswerNumber() << endl;
+            cout << "Total: " << days[start - 1].getCorrectAnswerNumber() + days[start - 1].getIncorrectAnswerNumber() << endl;
+        }
+        
+    }
 };
 
 int main()
@@ -347,7 +383,15 @@ int main()
         {
             leitner_boxes.nextDay();
         }
-
+        else if (command == STREAK)
+        {
+            leitner_boxes.printStreak();
+        }
+        else if (command == GET_REPORT)
+        {
+            leitner_boxes.getReport();
+        }
+        
         
     }
 }
