@@ -10,9 +10,11 @@ const string REVIEW_TODAY = "review_today";
 const string NEXT_DAY = "next_day";
 const string STREAK = "streak";
 const string GET_REPORT = "get_report";
+const string GET_PROGRESS_REPORT = "get_progress_report";
 
 const string COMPLETE_REVIEW_MASSAGE = "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!";
 const string FLASHCARD_ADDED_MASSAGE = "flashcards added to the daily box";
+const string REPORT_MASSAGE = "Keep up the great work! You're making steady progress toward mastering your flashcards.";
 
 class Flashcard
 {
@@ -113,6 +115,7 @@ private:
 
     int streak;
     int mastered_flashcards;
+    int total_days_participated;
 
     Box daily;
     Box once_in_three_days;
@@ -126,6 +129,7 @@ public:
         days = {Day(1)};
         streak = 0;
         mastered_flashcards = 0;
+        total_days_participated = 0;
     };
     void addFlashcard()
     {
@@ -322,6 +326,7 @@ public:
         else
         {
             streak += 1;
+            total_days_participated += 1;
         }
         cout << "Good morning! Today is day " << newDay.getDayNumber() << " of our journey." << endl;
         cout << "Your current streak is: " << streak << endl;
@@ -362,6 +367,15 @@ public:
         }
         
     }
+    void getProgressReprt(){
+        cout << "Challenge Progress Report: " << endl << endl;
+        cout << "Day of the Challenge: " << days.size() << endl;
+        cout << "Streak: " << streak << endl;
+        cout << "Total Days Practicipated: " << total_days_participated << endl;
+        cout << "Mastered Flashcards: " << mastered_flashcards << endl << endl;
+        cout << REPORT_MASSAGE << endl;
+
+    }
 };
 
 int main()
@@ -391,7 +405,10 @@ int main()
         {
             leitner_boxes.getReport();
         }
-        
-        
+        else if (command == GET_PROGRESS_REPORT)
+        {
+            leitner_boxes.getProgressReprt();
+        }
     }
+    return 0;
 }
