@@ -10,6 +10,9 @@ const string REVIEW_TODAY = "review_today";
 const string NEXT_DAY = "next_day";
 const string STREAK = "streak";
 
+const string COMPLETE_REVIEW_MASSAGE = "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!";
+const string FLASHCARD_ADDED_MASSAGE = "flashcards added to the daily box";
+
 class Flashcard
 {
 private:
@@ -71,32 +74,6 @@ public:
     {
         return flashcard.size();
     }
-    /*void reviewFlashcardFromBox(int numOfFc)
-    {
-        Flashcard *fc;
-        string user_answer;
-
-        for (int i = 0; i < numOfFc && i < flashcard.size(); i++)
-        {
-            fc = flashcard[i];
-            cout << "Flashcard: " << fc->getQuestion() << endl;
-            cout << "Your answer: ";
-            cin >> user_answer;
-
-            if (fc->getAnswer() == user_answer)
-            {
-                cout << "Your answer was correct! Well done, keep it up!" << endl;
-                weekly.addFlashcardToBox(fc);
-                daily.deleteFlashcardFromBox(fc);
-                i -= 1;
-                numOfFc -= 1;
-            }
-            else
-            {
-                cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
-            }
-        }
-    }*/
 };
 
 class Day
@@ -134,6 +111,7 @@ private:
     vector<Day> days;
 
     int streak;
+    int mastered_flashcards;
 
     Box daily;
     Box once_in_three_days;
@@ -146,6 +124,7 @@ public:
         flashcard = {};
         days = {Day(1)};
         streak = 0;
+        mastered_flashcards = 0;
     };
     void addFlashcard()
     {
@@ -165,12 +144,19 @@ public:
             flashcard.push_back(fc);
             daily.addFlashcardToBox(fc);
         }
+
+        cout << FLASHCARD_ADDED_MASSAGE << endl;
     }
     void reviewToday()
     {
         Flashcard *fc;
 
         Day today = days[days.size() - 1];
+
+        int num_of_fc_in_monthly = monthly.numberOfFlashcardInBox();
+        int num_of_fc_in_weekly = weekly.numberOfFlashcardInBox();
+        int num_of_fc_in_once_in_three_days = once_in_three_days.numberOfFlashcardInBox();
+        int num_of_fc_in_daily = daily.numberOfFlashcardInBox();
 
         string user_answer;
 
@@ -180,7 +166,7 @@ public:
 
         if (today.getDayNumber() % 30 == 0 && num_fc > 0)
         {
-            for (int i = 0; i < num_fc && i < monthly.numberOfFlashcardInBox(); i++)
+            for (int i = 0; i < num_fc && i < num_of_fc_in_monthly; i++)
             {
                 fc = monthly.getFlashcard(i);
 
@@ -190,8 +176,9 @@ public:
 
                 if (fc->getAnswer() == user_answer)
                 {
-                    cout << "Your answer was correct! Well done, keep it up!" << endl;
+                    cout << "You'r answer was correct! Well done, keep it up!" << endl;
                     monthly.deleteFlashcardFromBox(fc);
+                    mastered_flashcards += 1;
                     days[days.size() - 1].increseCorrectAnswer();
                     i -= 1;
                     num_fc -= 1;
@@ -209,12 +196,12 @@ public:
                     }
                 }
             }
-            num_fc -= monthly.numberOfFlashcardInBox();
+            num_fc -= num_of_fc_in_monthly;
         }
 
         if (today.getDayNumber() % 7 == 0 && num_fc > 0)
         {
-            for (int i = 0; i < num_fc && i < weekly.numberOfFlashcardInBox(); i++)
+            for (int i = 0; i < num_fc && i < num_of_fc_in_weekly; i++)
             {
                 fc = weekly.getFlashcard(i);
 
@@ -245,12 +232,12 @@ public:
                     }
                 }
             }
-            num_fc -= weekly.numberOfFlashcardInBox();
+            num_fc -= num_of_fc_in_weekly;
         }
 
         if (today.getDayNumber() % 3 == 0 && num_fc > 0)
         {
-            for (int i = 0; i < num_fc && i < once_in_three_days.numberOfFlashcardInBox(); i++)
+            for (int i = 0; i < num_fc && i < num_of_fc_in_once_in_three_days; i++)
             {
                 fc = once_in_three_days.getFlashcard(i);
 
@@ -281,12 +268,12 @@ public:
                     }
                 }
             }
-            num_fc -= once_in_three_days.numberOfFlashcardInBox();
+            num_fc -= num_of_fc_in_once_in_three_days;
         }
 
         if (today.getDayNumber() % 1 == 0 && num_fc > 0)
         {
-            for (int i = 0; i < num_fc && i < daily.numberOfFlashcardInBox(); i++)
+            for (int i = 0; i < num_fc && i < num_of_fc_in_daily; i++)
             {
                 fc = daily.getFlashcard(i);
 
@@ -312,7 +299,7 @@ public:
             }
         }
 
-        cout << "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!" << endl;
+        cout << COMPLETE_REVIEW_MASSAGE << endl;
     }
     void nextDay()
     {
@@ -354,5 +341,7 @@ int main()
         {
             leitner_boxes.nextDay();
         }
+
+        
     }
 }
