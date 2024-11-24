@@ -133,13 +133,15 @@ public:
 
         Flashcard *fc;
 
-        int number_of_question;
-        cin >> number_of_question;
+
+        string s;
+        getline(cin, s);
+        int number_of_question = stoi(s);
 
         for (int i = 0; i < number_of_question; i++)
         {
-            cin >> question;
-            cin >> answer;
+            getline(cin, question);
+            getline(cin, answer);
             fc = new Flashcard(question, answer);
             flashcard.push_back(fc);
             daily.addFlashcardToBox(fc);
@@ -173,6 +175,7 @@ public:
                 cout << "Flashcard: " << fc->getQuestion() << endl;
                 cout << "Your answer: ";
                 cin >> user_answer;
+                cout << endl;
 
                 if (fc->getAnswer() == user_answer)
                 {
@@ -208,6 +211,7 @@ public:
                 cout << "Flashcard: " << fc->getQuestion() << endl;
                 cout << "Your answer: ";
                 cin >> user_answer;
+                cout << endl;
 
                 if (fc->getAnswer() == user_answer)
                 {
@@ -244,6 +248,7 @@ public:
                 cout << "Flashcard: " << fc->getQuestion() << endl;
                 cout << "Your answer: ";
                 cin >> user_answer;
+                cout << endl;
 
                 if (fc->getAnswer() == user_answer)
                 {
@@ -280,6 +285,7 @@ public:
                 cout << "Flashcard: " << fc->getQuestion() << endl;
                 cout << "Your answer: ";
                 cin >> user_answer;
+                cout << endl;
 
                 if (fc->getAnswer() == user_answer)
                 {
