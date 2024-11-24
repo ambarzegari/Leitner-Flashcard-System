@@ -347,22 +347,22 @@ public:
         cin >> start;
         cin >> end;
 
-        if (start == end){
+        if (start != end){
             for (int i = 0; i <= end - start ; i++)
             {
                 correct += days[start - 1 + i].getCorrectAnswerNumber();
                 incorrect += days[start - 1 + i].getIncorrectAnswerNumber();
             }
             cout << "Day: " << start << " to " << end << endl;
-            cout << "Correct Answer: " << correct << endl;
-            cout << "Incorrect Answer: " << incorrect << endl;
+            cout << "Correct Answers: " << correct << endl;
+            cout << "Incorrect Answers: " << incorrect << endl;
             cout << "Total: " << incorrect + correct << endl;
         }
         else
         {
             cout << "Day: " << start << endl;
-            cout << "Correct Answer: " << days[start - 1].getCorrectAnswerNumber() << endl;
-            cout << "Incorrect Answer: " << days[start - 1].getIncorrectAnswerNumber() << endl;
+            cout << "Correct Answers: " << days[start - 1].getCorrectAnswerNumber() << endl;
+            cout << "Incorrect Answers: " << days[start - 1].getIncorrectAnswerNumber() << endl;
             cout << "Total: " << days[start - 1].getCorrectAnswerNumber() + days[start - 1].getIncorrectAnswerNumber() << endl;
         }
         
