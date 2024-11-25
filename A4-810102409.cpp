@@ -71,7 +71,11 @@ public:
     }
     void deleteFlashcardFromBox(Flashcard *flashcard_ptr)
     {
-        flashcard.erase(find(flashcard.begin(), flashcard.end(), flashcard_ptr));
+        auto it = find(flashcard.begin(), flashcard.end(), flashcard_ptr);
+        if (it != flashcard.end())
+        {
+            flashcard.erase(it);
+        }
     }
     int numberOfFlashcardInBox()
     {
@@ -99,10 +103,12 @@ public:
     void increseCorrectAnswer()
     {
         correctAnswer += 1;
+        cout << "*********************************************" << endl;
     }
     void increseIncorrectAnswer()
     {
         incorrectAnswer += 1;
+        cout << "---------------------------------------------" << endl;
     }
 };
 
@@ -138,7 +144,6 @@ public:
 
         Flashcard *fc;
 
-
         string s;
         getline(cin, s);
         int number_of_question = stoi(s);
@@ -170,6 +175,8 @@ public:
         int number_of_flashcards;
         cin >> number_of_flashcards;
         int num_fc = number_of_flashcards;
+        streak++;
+        total_days_participated++;
 
         if (today.getDayNumber() % 30 == 0 && num_fc > 0)
         {
@@ -187,24 +194,29 @@ public:
                     cout << "You'r answer was correct! Well done, keep it up!" << endl;
                     monthly.deleteFlashcardFromBox(fc);
                     mastered_flashcards += 1;
-                    days[days.size() - 1].increseCorrectAnswer();
+                    today.increseCorrectAnswer();
                     i -= 1;
-                    num_fc -= 1;
+                    num_of_fc_in_monthly -= 1;
+                    num_fc--;
                 }
                 else
                 {
                     cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
-                    days[days.size() - 1].increseIncorrectAnswer();
+                    today.increseIncorrectAnswer();
                     fc->increaseNumberOfIncorrectAnswer();
                     if (fc->getNumberOfIncorrectAnswer() == 2)
                     {
                         weekly.addFlashcardToBox(fc);
                         monthly.deleteFlashcardFromBox(fc);
                         fc->resetToZeroNumberOfIncorrectAnswer();
+                        i -= 1;
+                        num_of_fc_in_monthly -= 1;
+                        num_fc--;
                     }
                 }
+                number_of_flashcards--;
             }
-            num_fc -= num_of_fc_in_monthly;
+            num_fc = number_of_flashcards;
         }
 
         if (today.getDayNumber() % 7 == 0 && num_fc > 0)
@@ -224,24 +236,29 @@ public:
                     monthly.addFlashcardToBox(fc);
                     weekly.deleteFlashcardFromBox(fc);
                     fc->resetToZeroNumberOfIncorrectAnswer();
-                    days[days.size() - 1].increseCorrectAnswer();
+                    today.increseCorrectAnswer();
                     i -= 1;
-                    num_fc -= 1;
+                    num_of_fc_in_weekly -= 1;
+                    num_fc--;
                 }
                 else
                 {
                     cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
-                    days[days.size() - 1].increseIncorrectAnswer();
+                    today.increseIncorrectAnswer();
                     fc->increaseNumberOfIncorrectAnswer();
                     if (fc->getNumberOfIncorrectAnswer() == 2)
                     {
                         once_in_three_days.addFlashcardToBox(fc);
                         weekly.deleteFlashcardFromBox(fc);
                         fc->resetToZeroNumberOfIncorrectAnswer();
+                        i -= 1;
+                        num_of_fc_in_weekly -= 1;
+                        num_fc--;
                     }
                 }
+                number_of_flashcards--;
             }
-            num_fc -= num_of_fc_in_weekly;
+            num_fc = number_of_flashcards;
         }
 
         if (today.getDayNumber() % 3 == 0 && num_fc > 0)
@@ -261,24 +278,29 @@ public:
                     weekly.addFlashcardToBox(fc);
                     once_in_three_days.deleteFlashcardFromBox(fc);
                     fc->resetToZeroNumberOfIncorrectAnswer();
-                    days[days.size() - 1].increseCorrectAnswer();
+                    today.increseCorrectAnswer();
                     i -= 1;
-                    num_fc -= 1;
+                    num_of_fc_in_once_in_three_days -= 1;
+                    num_fc--;
                 }
                 else
                 {
                     cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
-                    days[days.size() - 1].increseIncorrectAnswer();
+                    today.increseIncorrectAnswer();
                     fc->increaseNumberOfIncorrectAnswer();
                     if (fc->getNumberOfIncorrectAnswer() == 2)
                     {
                         daily.addFlashcardToBox(fc);
                         once_in_three_days.deleteFlashcardFromBox(fc);
                         fc->resetToZeroNumberOfIncorrectAnswer();
+                        i -= 1;
+                        num_of_fc_in_once_in_three_days -= 1;
+                        num_fc--;
                     }
                 }
+                number_of_flashcards--;
             }
-            num_fc -= num_of_fc_in_once_in_three_days;
+            num_fc = number_of_flashcards;
         }
 
         if (today.getDayNumber() % 1 == 0 && num_fc > 0)
@@ -298,14 +320,15 @@ public:
                     once_in_three_days.addFlashcardToBox(fc);
                     daily.deleteFlashcardFromBox(fc);
                     fc->resetToZeroNumberOfIncorrectAnswer();
-                    days[days.size() - 1].increseCorrectAnswer();
+                    today.increseCorrectAnswer();
                     i -= 1;
-                    num_fc -= 1;
+                    num_of_fc_in_daily -= 1;
+                    num_fc--;
                 }
                 else
                 {
                     cout << "Your answer was incorrect. Don't worry! The correct answer is: " << fc->getAnswer() << ". Keep practicing!" << endl;
-                    days[days.size() - 1].increseIncorrectAnswer();
+                    today.increseIncorrectAnswer();
                 }
             }
         }
@@ -318,15 +341,12 @@ public:
         Day oldDay = days[days.size() - 1];
         Day newDay = Day(days.size() + 1);
         days.push_back(newDay);
+        cout << oldDay.getDayNumber() << endl;
 
         if (oldDay.getCorrectAnswerNumber() == 0 && oldDay.getIncorrectAnswerNumber() == 0)
         {
+            cout << oldDay.getCorrectAnswerNumber() << "\t" << oldDay.getIncorrectAnswerNumber() << endl;
             streak = 0;
-        }
-        else
-        {
-            streak += 1;
-            total_days_participated += 1;
         }
         cout << "Good morning! Today is day " << newDay.getDayNumber() << " of our journey." << endl;
         cout << "Your current streak is: " << streak << endl;
@@ -337,7 +357,8 @@ public:
         cout << "Your current streak is: " << streak << endl;
         cout << "Keep going!" << endl;
     }
-    void getReport(){
+    void getReport()
+    {
         int start;
         int end;
 
@@ -347,8 +368,9 @@ public:
         cin >> start;
         cin >> end;
 
-        if (start != end){
-            for (int i = 0; i <= end - start ; i++)
+        if (start != end)
+        {
+            for (int i = 0; i <= end - start; i++)
             {
                 correct += days[start - 1 + i].getCorrectAnswerNumber();
                 incorrect += days[start - 1 + i].getIncorrectAnswerNumber();
@@ -365,16 +387,17 @@ public:
             cout << "Incorrect Answers: " << days[start - 1].getIncorrectAnswerNumber() << endl;
             cout << "Total: " << days[start - 1].getCorrectAnswerNumber() + days[start - 1].getIncorrectAnswerNumber() << endl;
         }
-        
     }
-    void getProgressReprt(){
-        cout << "Challenge Progress Report: " << endl << endl;
+    void getProgressReprt()
+    {
+        cout << "Challenge Progress Report: " << endl
+             << endl;
         cout << "Day of the Challenge: " << days.size() << endl;
         cout << "Streak: " << streak << endl;
         cout << "Total Days Practicipated: " << total_days_participated << endl;
-        cout << "Mastered Flashcards: " << mastered_flashcards << endl << endl;
+        cout << "Mastered Flashcards: " << mastered_flashcards << endl
+             << endl;
         cout << REPORT_MASSAGE << endl;
-
     }
 };
 
