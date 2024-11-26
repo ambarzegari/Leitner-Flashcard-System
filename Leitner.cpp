@@ -1,168 +1,22 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <bits/stdc++.h>
+    #include "Leitner.hpp"
 
-using namespace std;
-
-const string ADD_FLASHCARD = "add_flashcard";
-const string REVIEW_TODAY = "review_today";
-const string NEXT_DAY = "next_day";
-const string STREAK = "streak";
-const string GET_REPORT = "get_report";
-const string GET_PROGRESS_REPORT = "get_progress_report";
-
-const string COMPLETE_REVIEW_MASSAGE = "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!";
-const string FLASHCARD_ADDED_MASSAGE = "flashcards added to the daily box";
-const string REPORT_MASSAGE = "Keep up the great work! You're making steady progress toward mastering your flashcards.";
-
-class Flashcard
-{
-private:
-    string question;
-    string answer;
-    int number_of_incorrect_answer;
-    bool review;
-
-public:
-    Flashcard(string _question, string _answer)
-    {
-        question = _question;
-        answer = _answer;
-        number_of_incorrect_answer = 0;
-        review = false;
-    }
-    string getQuestion() { return question; }
-    string getAnswer() { return answer; }
-    int getNumberOfIncorrectAnswer() { return number_of_incorrect_answer; }
-    void increaseNumberOfIncorrectAnswer()
-    {
-        number_of_incorrect_answer += 1;
-    }
-    void resetToZeroNumberOfIncorrectAnswer()
-    {
-        number_of_incorrect_answer = 0;
-    }
-    bool checkAnswer(string userAnswer)
-    {
-        if (answer == userAnswer)
-        {
-            return true;
-        }
-        return false;
-    }
-    void reviweTrue()
-    {
-        review = true;
-    }
-    void reviewFalse()
-    {
-        review = false;
-    }
-    bool readStatus()
-    {
-        return review;
-    }
-};
-
-class Box
-{
-private:
-    vector<Flashcard *> flashcard;
-
-public:
-    Box()
-    {
-        flashcard = {};
-    }
-    void addFlashcardToBox(Flashcard *flashcard_ptr)
-    {
-        auto fc = flashcard.end();
-        if (fc == find(flashcard.begin(), flashcard.end(), flashcard_ptr))
-        {
-        flashcard.push_back(flashcard_ptr);
-        }
-    }
-    Flashcard *getFlashcard(int i)
-    {
-        return flashcard[i];
-    }
-    void deleteFlashcardFromBox(Flashcard *flashcard_ptr)
-    {
-        auto it = find(flashcard.begin(), flashcard.end(), flashcard_ptr);
-        if (it != flashcard.end())
-        {
-            flashcard.erase(it);
-        }
-    }
-    int numberOfFlashcardInBox()
-    {
-        return flashcard.size();
-    }
-    vector<Flashcard *> getFlashcardsInBox() { return flashcard; }
-};
-
-class Day
-{
-private:
-    int dayNumber;
-    int correctAnswer;
-    int incorrectAnswer;
-
-public:
-    Day(int day)
-    {
-        dayNumber = day;
-        correctAnswer = 0;
-        incorrectAnswer = 0;
-    }
-    int getDayNumber() { return dayNumber; }
-    int getCorrectAnswerNumber() { return correctAnswer; }
-    int getIncorrectAnswerNumber() { return incorrectAnswer; }
-    void increseCorrectAnswer()
-    {
-        correctAnswer++;
-    }
-    void increseIncorrectAnswer()
-    {
-        incorrectAnswer++;
-    }
-};
-
-class Leitner
-{
-private:
-    vector<Flashcard *> flashcard;
-    vector<Flashcard *> today_flashcards;
-
-    vector<Day> days;
-
-    int streak;
-    int mastered_flashcards;
-    int total_days_participated;
-
-    Box daily;
-    Box once_in_three_days;
-    Box weekly;
-    Box monthly;
-
-public:
-    Leitner()
+    
+    Leitner::Leitner()
     {
         flashcard = {};
         days = {Day(1)};
         streak = 0;
         mastered_flashcards = 0;
         total_days_participated = 0;
-    };
-    ~Leitner()
+    }
+    Leitner::~Leitner()
     {
-        for (int i = 0; i < flashcard.size(); i++)
+        for (size_t i = 0; i < flashcard.size(); i++)
         {
             delete flashcard[i];
         }
     }
-    void addFlashcard()
+    void Leitner::addFlashcard()
     {
         string question;
         string answer;
@@ -182,9 +36,9 @@ public:
             daily.addFlashcardToBox(fc);
         }
 
-        cout << FLASHCARD_ADDED_MASSAGE << endl;
+        cout << "flashcards added to the daily box" << endl;
     }
-    void reviewToday()
+    void Leitner::reviewToday()
     {
         Flashcard *fc;
 
@@ -293,17 +147,17 @@ public:
             }
         }
 
-        cout << COMPLETE_REVIEW_MASSAGE << endl;
+        cout << "You’ve completed today’s review! Keep the momentum going and continue building your knowledge, one flashcard at a time!" << endl;
     }
 
-    void nextDay()
+    void Leitner::nextDay()
     {
 
         Day oldDay = days[days.size() - 1];
         Day newDay = Day(days.size() + 1);
         days.push_back(newDay);
 
-        for (int i = 0; i < today_flashcards.size(); i++)
+        for (size_t i = 0; i < today_flashcards.size(); i++)
         {
             Flashcard *fc = today_flashcards[i];
             if (!fc->readStatus())
@@ -338,12 +192,12 @@ public:
         cout << "Your current streak is: " << streak << endl;
         cout << "Start reviewing to keep your streak!" << endl;
     }
-    void printStreak()
+    void Leitner::printStreak()
     {
         cout << "Your current streak is: " << streak << endl;
         cout << "Keep going!" << endl;
     }
-    void getReport()
+    void Leitner::getReport()
     {
         int start;
         int end;
@@ -374,7 +228,7 @@ public:
             cout << "Total: " << days[start - 1].getCorrectAnswerNumber() + days[start - 1].getIncorrectAnswerNumber() << endl;
         }
     }
-    void getProgressReprt()
+    void Leitner::getProgressReprt()
     {
         cout << "Challenge Progress Report:" << endl
              << endl;
@@ -383,41 +237,5 @@ public:
         cout << "Total Days Participated: " << total_days_participated << endl;
         cout << "Mastered Flashcards: " << mastered_flashcards << endl
              << endl;
-        cout << REPORT_MASSAGE << endl;
+        cout << "Keep up the great work! You're making steady progress toward mastering your flashcards." << endl;
     }
-};
-
-int main()
-{
-    Leitner leitner_boxes;
-
-    string command;
-    while (cin >> command)
-    {
-        if (command == ADD_FLASHCARD)
-        {
-            leitner_boxes.addFlashcard();
-        }
-        else if (command == REVIEW_TODAY)
-        {
-            leitner_boxes.reviewToday();
-        }
-        else if (command == NEXT_DAY)
-        {
-            leitner_boxes.nextDay();
-        }
-        else if (command == STREAK)
-        {
-            leitner_boxes.printStreak();
-        }
-        else if (command == GET_REPORT)
-        {
-            leitner_boxes.getReport();
-        }
-        else if (command == GET_PROGRESS_REPORT)
-        {
-            leitner_boxes.getProgressReprt();
-        }
-    }
-    return 0;
-}
